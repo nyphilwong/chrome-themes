@@ -1,0 +1,13 @@
+{
+  "name": "chrome-themes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Chrome themes matched to terminal color schemes.",
+  "scripts": {
+    "check": "node scripts/validate.mjs",
+    "sync": "node scripts/sync.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "package": "node scripts/package.mjs"
+  }
+}

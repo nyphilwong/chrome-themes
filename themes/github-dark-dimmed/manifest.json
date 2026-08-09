@@ -1,0 +1,141 @@
+{
+  "manifest_version": 3,
+  "name": "GitHub Dark Dimmed",
+  "version": "1.1.0",
+  "description": "GitHub Dark Dimmed for Chrome, matched to the Ghostty terminal theme of the same name.",
+  "theme": {
+    "colors": {
+      "frame": [
+        13,
+        17,
+        23
+      ],
+      "frame_inactive": [
+        13,
+        17,
+        23
+      ],
+      "toolbar": [
+        34,
+        39,
+        46
+      ],
+      "toolbar_text": [
+        173,
+        186,
+        199
+      ],
+      "toolbar_button_icon": [
+        173,
+        186,
+        199
+      ],
+      "tab_text": [
+        173,
+        186,
+        199
+      ],
+      "background_tab": [
+        13,
+        17,
+        23
+      ],
+      "background_tab_inactive": [
+        13,
+        17,
+        23
+      ],
+      "tab_background_text": [
+        144,
+        157,
+        171
+      ],
+      "tab_background_text_inactive": [
+        118,
+        131,
+        144
+      ],
+      "omnibox_background": [
+        13,
+        17,
+        23
+      ],
+      "omnibox_text": [
+        173,
+        186,
+        199
+      ],
+      "bookmark_text": [
+        173,
+        186,
+        199
+      ],
+      "ntp_background": [
+        34,
+        39,
+        46
+      ],
+      "ntp_text": [
+        173,
+        186,
+        199
+      ],
+      "ntp_link": [
+        108,
+        182,
+        255
+      ],
+      "ntp_header": [
+        68,
+        76,
+        86
+      ],
+      "frame_incognito": [
+        1,
+        4,
+        9
+      ],
+      "frame_incognito_inactive": [
+        1,
+        4,
+        9
+      ],
+      "background_tab_incognito": [
+        1,
+        4,
+        9
+      ],
+      "background_tab_incognito_inactive": [
+        1,
+        4,
+        9
+      ],
+      "tab_background_text_incognito": [
+        144,
+        157,
+        171
+      ],
+      "tab_background_text_incognito_inactive": [
+        118,
+        131,
+        144
+      ],
+      "button_background": [
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    "tints": {
+      "buttons": [
+        -1,
+        -1,
+        -1
+      ]
+    },
+    "properties": {
+      "ntp_logo_alternate": 1
+    }
+  }
+}

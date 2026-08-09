@@ -1,0 +1,83 @@
+{
+  "name": "GitHub Dark Dimmed",
+  "slug": "github-dark-dimmed",
+  "source": "https://raw.githubusercontent.com/mbadolato/iTerm2-Color-Schemes/master/ghostty/GitHub%20Dark%20Dimmed",
+  "note": "surfaces.recessed/incognito are Primer *dark* canvas tokens, one step below dark_dimmed — chosen to give the tab strip visible separation from the toolbar. terminal.* is verbatim from the Ghostty theme file. surfaces.* comes from GitHub Primer dark_dimmed tokens — a terminal palette has no concept of elevation, but browser chrome needs stacked surfaces.",
+
+  "terminal": {
+    "background": "#22272e",
+    "foreground": "#adbac7",
+    "cursor": "#539bf5",
+
+    "black": "#545d68",
+    "red": "#f47067",
+    "green": "#57ab5a",
+    "yellow": "#c69026",
+    "blue": "#539bf5",
+    "magenta": "#b083f0",
+    "cyan": "#39c5cf",
+    "white": "#909dab",
+
+    "bright_black": "#636e7b",
+    "bright_red": "#ff938a",
+    "bright_green": "#6bc46d",
+    "bright_yellow": "#daaa3f",
+    "bright_blue": "#6cb6ff",
+    "bright_magenta": "#dcbdfb",
+    "bright_cyan": "#56d4dd",
+    "bright_white": "#cdd9e5"
+  },
+
+  "surfaces": {
+    "recessed": "#0d1117",
+    "inset": "#1c2128",
+    "default": "#22272e",
+    "overlay": "#2d333b",
+    "border": "#444c56",
+    "incognito": "#010409"
+  },
+
+  "text": {
+    "muted": "#768390"
+  },
+
+  "chrome": {
+    "_note": "The intended manifest field -> palette role mapping. This is the spec; themes/<slug>/manifest.json is the implementation. `npm run check` diffs the two, so it can tell you not just 'that's a valid colour' but 'that's the wrong colour for this field'.",
+
+    "colors": {
+      "frame": "surfaces.recessed",
+      "frame_inactive": "surfaces.recessed",
+
+      "toolbar": "surfaces.default",
+      "toolbar_text": "terminal.foreground",
+      "toolbar_button_icon": "terminal.foreground",
+
+      "tab_text": "terminal.foreground",
+      "background_tab": "surfaces.recessed",
+      "background_tab_inactive": "surfaces.recessed",
+      "tab_background_text": "terminal.white",
+      "tab_background_text_inactive": "text.muted",
+
+      "omnibox_background": "surfaces.recessed",
+      "omnibox_text": "terminal.foreground",
+      "bookmark_text": "terminal.foreground",
+
+      "ntp_background": "surfaces.default",
+      "ntp_text": "terminal.foreground",
+      "ntp_link": "terminal.bright_blue",
+      "ntp_header": "surfaces.border",
+
+      "frame_incognito": "surfaces.incognito",
+      "frame_incognito_inactive": "surfaces.incognito",
+      "background_tab_incognito": "surfaces.incognito",
+      "background_tab_incognito_inactive": "surfaces.incognito",
+      "tab_background_text_incognito": "terminal.white",
+      "tab_background_text_incognito_inactive": "text.muted",
+
+      "button_background": "transparent"
+    },
+
+    "tints": ["buttons"],
+    "properties": ["ntp_logo_alternate"]
+  }
+}
