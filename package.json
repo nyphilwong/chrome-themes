@@ -7,6 +7,7 @@
   "scripts": {
     "check": "node scripts/validate.mjs",
     "sync": "node scripts/sync.mjs",
+    "assets": "node scripts/assets.mjs",
     "contrast": "node scripts/contrast.mjs",
     "package": "node scripts/package.mjs"
   }
