@@ -275,9 +275,16 @@ Zero dependencies — plain Node, no `package.json` needed beyond `"type": "modu
 | Screenshots | Only needed if publishing |
 | CI validate-on-push | Nice; add once the validator exists |
 
-The strong recommendation is **colours only, no images**. Images add build weight, need
-`@2x` variants for HiDPI, and would actively work against the goal of matching a flat
-terminal background.
+The original recommendation here was **colours only, no images** — on the grounds that
+images add build weight and fight a flat terminal background. That held for the toolbar,
+which still matches the terminal exactly, but was wrong overall: with a near-greyscale
+source palette the result read as flat rather than restrained.
+
+Superseded. The theme now ships two **procedurally generated** gradient strips
+(`theme_frame`, `theme_ntp_background`) built from the palette by `npm run images`.
+Because Chrome tiles them horizontally, a 16px-wide strip covers any monitor width at
+any resolution — which also sidesteps the HiDPI concern, since there is no fixed-size
+artwork to scale. Combined cost is roughly half a kilobyte.
 
 ---
 

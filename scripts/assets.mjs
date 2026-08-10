@@ -10,8 +10,6 @@
  * Screenshots are NOT generated: a store screenshot should show the real
  * product. Take one of your actual browser (see docs/PUBLISHING.md).
  *
- * Zero dependencies — PNGs are written directly with node:zlib.
- *
  * Usage:
  *   npm run assets -- github-dark-dimmed
  */
@@ -19,139 +17,10 @@
 import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
-import { deflateSync } from "node:zlib";
+import { Canvas, encodePNG } from "./lib/png.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const SS = 4; // supersampling factor, for antialiased edges
-
-// --- PNG writer ----------------------------------------------------------
-
-const CRC_TABLE = (() => {
-  const t = new Uint32Array(256);
-  for (let i = 0; i < 256; i++) {
-    let c = i;
-    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
-    t[i] = c >>> 0;
-  }
-  return t;
-})();
-
-function crc32(buf) {
-  let c = 0xffffffff;
-  for (const b of buf) c = CRC_TABLE[(c ^ b) & 0xff] ^ (c >>> 8);
-  return (c ^ 0xffffffff) >>> 0;
-}
-
-function chunk(type, data) {
-  const len = Buffer.alloc(4);
-  len.writeUInt32BE(data.length, 0);
-  const body = Buffer.concat([Buffer.from(type, "ascii"), data]);
-  const crc = Buffer.alloc(4);
-  crc.writeUInt32BE(crc32(body), 0);
-  return Buffer.concat([len, body, crc]);
-}
-
-/** rgba: Uint8Array of w*h*4 */
-function encodePNG(w, h, rgba) {
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(w, 0);
-  ihdr.writeUInt32BE(h, 4);
-  ihdr[8] = 8;  // bit depth
-  ihdr[9] = 6;  // colour type: RGBA
-  ihdr[10] = 0; // deflate
-  ihdr[11] = 0; // adaptive filtering
-  ihdr[12] = 0; // no interlace
-
-  // Each scanline is prefixed with a filter-type byte (0 = None).
-  const raw = Buffer.alloc(h * (w * 4 + 1));
-  for (let y = 0; y < h; y++) {
-    raw[y * (w * 4 + 1)] = 0;
-    Buffer.from(rgba.buffer, rgba.byteOffset + y * w * 4, w * 4)
-      .copy(raw, y * (w * 4 + 1) + 1);
-  }
-
-  return Buffer.concat([
-    Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]),
-    chunk("IHDR", ihdr),
-    chunk("IDAT", deflateSync(raw, { level: 9 })),
-    chunk("IEND", Buffer.alloc(0)),
-  ]);
-}
-
-// --- tiny canvas ---------------------------------------------------------
-
-const hex = (h) => {
-  const s = h.replace("#", "");
-  return [0, 2, 4].map((i) => parseInt(s.slice(i, i + 2), 16));
-};
-
-class Canvas {
-  constructor(w, h) {
-    this.w = w;
-    this.h = h;
-    this.px = new Uint8Array(w * h * 4); // transparent
-  }
-  set(x, y, [r, g, b], a = 255) {
-    if (x < 0 || y < 0 || x >= this.w || y >= this.h) return;
-    const i = (y * this.w + x) * 4;
-    this.px[i] = r; this.px[i + 1] = g; this.px[i + 2] = b; this.px[i + 3] = a;
-  }
-  rect(x, y, w, h, colour) {
-    const c = hex(colour);
-    for (let yy = Math.max(0, y | 0); yy < Math.min(this.h, y + h); yy++) {
-      for (let xx = Math.max(0, x | 0); xx < Math.min(this.w, x + w); xx++) {
-        this.set(xx, yy, c);
-      }
-    }
-  }
-  /** Rounded rectangle; `corners` selects which get rounded. */
-  roundRect(x, y, w, h, r, colour, corners = { tl: 1, tr: 1, br: 1, bl: 1 }) {
-    const c = hex(colour);
-    for (let yy = 0; yy < h; yy++) {
-      for (let xx = 0; xx < w; xx++) {
-        const left = xx < r, right = xx >= w - r;
-        const top = yy < r, bottom = yy >= h - r;
-        let inside = true;
-        const test = (cx, cy) => (xx - cx) ** 2 + (yy - cy) ** 2 <= r * r;
-        if (left && top && corners.tl) inside = test(r - 0.5, r - 0.5);
-        else if (right && top && corners.tr) inside = test(w - r - 0.5, r - 0.5);
-        else if (left && bottom && corners.bl) inside = test(r - 0.5, h - r - 0.5);
-        else if (right && bottom && corners.br) inside = test(w - r - 0.5, h - r - 0.5);
-        if (inside) this.set(x + xx, y + yy, c);
-      }
-    }
-  }
-  /** Box-filter downsample by `f`, producing the antialiased result. */
-  downsample(f) {
-    const w = this.w / f, h = this.h / f;
-    const out = new Canvas(w, h);
-    for (let y = 0; y < h; y++) {
-      for (let x = 0; x < w; x++) {
-        let r = 0, g = 0, b = 0, a = 0;
-        for (let dy = 0; dy < f; dy++) {
-          for (let dx = 0; dx < f; dx++) {
-            const i = ((y * f + dy) * this.w + (x * f + dx)) * 4;
-            const al = this.px[i + 3] / 255;
-            r += this.px[i] * al; g += this.px[i + 1] * al; b += this.px[i + 2] * al;
-            a += this.px[i + 3];
-          }
-        }
-        const n = f * f;
-        const aa = a / n;
-        // Un-premultiply so edge pixels keep their colour rather than darkening.
-        const scale = aa > 0 ? 255 / aa / n : 0;
-        const i = (y * w + x) * 4;
-        out.px[i] = Math.round(Math.min(255, r * scale));
-        out.px[i + 1] = Math.round(Math.min(255, g * scale));
-        out.px[i + 2] = Math.round(Math.min(255, b * scale));
-        out.px[i + 3] = Math.round(aa);
-      }
-    }
-    return out;
-  }
-}
-
-// --- the mark ------------------------------------------------------------
 
 /**
  * A stylised browser window: recessed tab strip with one active tab lifting
@@ -215,6 +84,7 @@ if (!existsSync(palPath)) {
   process.exit(1);
 }
 const raw = JSON.parse(readFileSync(palPath, "utf8"));
+
 // Icon artwork favours legibility over literal accuracy: the "page" area uses
 // the lightest surface token so the three stacked surfaces stay distinct at
 // 128px. Every colour is still drawn from the theme's own palette.

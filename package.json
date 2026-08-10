@@ -8,6 +8,7 @@
     "check": "node scripts/validate.mjs",
     "sync": "node scripts/sync.mjs",
     "assets": "node scripts/assets.mjs",
+    "images": "node scripts/images.mjs",
     "contrast": "node scripts/contrast.mjs",
     "package": "node scripts/package.mjs"
   }

@@ -78,6 +78,7 @@
     },
 
     "tints": ["buttons"],
-    "properties": ["ntp_logo_alternate"]
+    "properties": ["ntp_logo_alternate", "ntp_background_alignment", "ntp_background_repeat"],
+    "images": ["theme_frame", "theme_ntp_background"]
   }
 }

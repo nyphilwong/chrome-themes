@@ -11,13 +11,13 @@ Total cost: **$5, once, ever** — covers every theme you publish from that acco
 ## Step 0 — What you already have
 
 ```bash
-npm run package -- github-dark-dimmed   # dist/github-dark-dimmed-1.1.0.zip
+npm run package -- github-dark-dimmed   # dist/github-dark-dimmed-1.2.0.zip
 npm run assets  -- github-dark-dimmed   # dist/store/github-dark-dimmed/
 ```
 
 | Asset | Status |
 |---|---|
-| Extension ZIP | Built |
+| Extension ZIP | Built (includes theme images) |
 | Store icon, 128×128 | Generated |
 | Small promo tile, 440×280 | Generated |
 | **Screenshot, 1280×800** | **You need to take this** — step 2 |
@@ -92,7 +92,7 @@ Verify the dimensions — the dashboard rejects anything that isn't exact.
 ## Step 3 — Upload
 
 1. Dashboard → **Add new item**
-2. Drop in `dist/github-dark-dimmed-1.1.0.zip`
+2. Drop in `dist/github-dark-dimmed-1.2.0.zip`
 3. Wait for the upload to process
 
 Chrome reads `manifest.json` and detects it's a theme, so some extension-only fields

@@ -11,7 +11,7 @@ Last updated: 2026-08-09
 
 | Theme | Status |
 |---|---|
-| `github-dark-dimmed` | **Complete** — 26/26 fields, validates clean, packaged to `dist/github-dark-dimmed-1.0.0.zip`. Awaiting visual verification in Chrome. |
+| `github-dark-dimmed` | **v1.2.0** — 30/30 fields (24 colours, 1 tint, 3 properties, 2 images), validates clean, packaged. Awaiting visual verification of the image pass. |
 
 The guided walkthrough in `.private/LESSONS.md` was **not used** — the theme was
 filled in directly from the palette role map. It's parked and still accurate; use it
@@ -26,6 +26,11 @@ for.
 | `npm run contrast` | WCAG ratios for text-on-surface pairs | Working |
 | `npm run package -- <slug>` | Zips to `dist/`, gated on validation | Working |
 | `npm run sync` | WSL only — copies themes to `C:\Users\<you>\dev\chrome-themes\themes\` | Working |
+| `npm run images -- <slug>` | Generates the theme's own gradient strips into `themes/<slug>/images/` | Working |
+| `npm run assets -- <slug>` | Generates Web Store icon + promo tile into `dist/store/<slug>/` | Working |
+
+Both generators share `scripts/lib/png.mjs` — a hand-rolled PNG writer and raster
+canvas, so the repo stays dependency-free.
 
 **Dev environment:** WSL2 (`Ubuntu-24.04`), Chrome on Windows. Chrome's "Load
 unpacked" picker cannot browse the Linux filesystem, and `\\wsl.localhost\...` UNC
@@ -58,7 +63,7 @@ Nothing needs building out to add theme #2 — see the recipe below.
 | Decision | Choice | Reasoning |
 |---|---|---|
 | Manifest authoring | **Hand-written, validated** — not generated | Learning goal. A generator would hide exactly the mechanics worth understanding. Revisit at theme #3. |
-| Images | **None** — colours only | A flat colour *is* the terminal look. PNGs add HiDPI variants and build weight for no gain. |
+| Images | **Two tiled gradient strips** (`theme_frame`, `theme_ntp_background`) | Colours-only read as flat, because GitHub Dark Dimmed is near-greyscale by design. Generated procedurally from the palette by `npm run images` — 16px-wide strips tiled with `repeat-x`, ~0.5 KB total. Chrome does not scale theme images, so a tiled strip is the only form that covers any monitor width. |
 | Distribution | **Chrome Web Store, unlisted** | Only path that syncs across machines. Unlisted = installable by URL, absent from search. |
 | Colour specification | **Explicit, never derived** | Chrome derives unset fields rather than defaulting them; half-specified themes fail in hard-to-trace ways. |
 | Frame surface | Primer *dark* `canvas.default` `#0d1117`, not `dark_dimmed`'s `canvas.inset` | `#1c2128` gave only a 1.08 step against the toolbar — too flat to read as a separate surface. `#0d1117` gives 1.26 and lifts all text pairs to AA. |

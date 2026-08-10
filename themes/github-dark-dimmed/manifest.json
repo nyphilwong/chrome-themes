@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "GitHub Dark Dimmed",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "GitHub Dark Dimmed for Chrome, matched to the Ghostty terminal theme of the same name.",
   "theme": {
     "colors": {
@@ -135,7 +135,13 @@
       ]
     },
     "properties": {
-      "ntp_logo_alternate": 1
+      "ntp_logo_alternate": 1,
+      "ntp_background_alignment": "top",
+      "ntp_background_repeat": "repeat-x"
+    },
+    "images": {
+      "theme_frame": "images/frame.png",
+      "theme_ntp_background": "images/ntp-background.png"
     }
   }
 }

@@ -116,6 +116,7 @@ function loadPalette(slug) {
     roles: chrome.colors ?? {},
     expectTints: chrome.tints ?? [],
     expectProps: chrome.properties ?? [],
+    expectImages: chrome.images ?? [],
   };
 }
 
@@ -237,9 +238,11 @@ function validateTheme(slug) {
   const roles = pal?.roles ?? {};
   const expectTints = pal?.expectTints ?? [];
   const expectProps = pal?.expectProps ?? [];
+  const expectImages = pal?.expectImages ?? [];
   const total =
-    Object.keys(roles).length + expectTints.length + expectProps.length ||
-    Object.keys(colors).length + Object.keys(tints).length + Object.keys(props).length;
+    Object.keys(roles).length + expectTints.length + expectProps.length + expectImages.length ||
+    Object.keys(colors).length + Object.keys(tints).length +
+      Object.keys(props).length + Object.keys(images).length;
 
   // --- colors present in the manifest
   for (const [key, v] of Object.entries(colors)) {
@@ -318,6 +321,7 @@ function validateTheme(slug) {
   for (const key of Object.keys(roles)) if (!(key in colors)) pending.push(`colors.${key}`);
   for (const key of expectTints) if (!(key in tints)) pending.push(`tints.${key}`);
   for (const key of expectProps) if (!(key in props)) pending.push(`properties.${key}`);
+  for (const key of expectImages) if (!(key in images)) pending.push(`images.${key}`);
 
   return { slug, fatal, silent, warn, pending, done, total };
 }
