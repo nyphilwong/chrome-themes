@@ -14,7 +14,7 @@
  *   npm run assets -- github-dark-dimmed
  */
 
-import { readFileSync, existsSync, mkdirSync, writeFileSync } from "node:fs";
+import { readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync, copyFileSync } from "node:fs";
 import { join, dirname, resolve, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Canvas, encodePNG } from "./lib/png.mjs";
@@ -121,6 +121,45 @@ mkdirSync(outDir, { recursive: true });
   console.log(`  promo-tile-440x280.png    440x280   ${(png.length / 1024).toFixed(1)} KB`);
 }
 
+// --- collect hand-made assets so the upload set lives in one folder ------
+
+/** Read width/height straight from a PNG's IHDR chunk. */
+function pngSize(path) {
+  const b = readFileSync(path);
+  if (b.length < 24 || b.readUInt32BE(0) !== 0x89504e47) return null;
+  return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+}
+
+const VALID_SHOTS = [[1280, 800], [640, 400]];
+const srcDir = join(ROOT, "store", slug);
+let shots = 0;
+
+if (existsSync(srcDir)) {
+  for (const name of readdirSync(srcDir)) {
+    if (!/\.(png|jpe?g)$/i.test(name)) continue;
+    const from = join(srcDir, name);
+    copyFileSync(from, join(outDir, name));
+
+    const size = /\.png$/i.test(name) ? pngSize(from) : null;
+    if (!size) {
+      console.log(`  ${name.padEnd(25)} copied (dimensions unchecked — not a PNG)`);
+      shots++;
+      continue;
+    }
+    const ok = VALID_SHOTS.some(([w, h]) => w === size.w && h === size.h);
+    console.log(
+      `  ${name.padEnd(25)} ${size.w}x${size.h}` +
+      (ok ? "   OK" : `   <-- REJECTED by the store; must be 1280x800 or 640x400`)
+    );
+    shots++;
+  }
+}
+
 console.log(`\nWritten to ${relative(ROOT, outDir)}/`);
-console.log("Still needed: at least one 1280x800 screenshot of the real browser.");
-console.log("See docs/PUBLISHING.md.");
+if (shots === 0) {
+  console.log(`No screenshot yet. Put one in ${relative(ROOT, srcDir)}/ — at least one`);
+  console.log("1280x800 (or 640x400) shot of the real browser is required.");
+  console.log("See docs/PUBLISHING.md.");
+} else {
+  console.log("That folder now holds the complete upload set.");
+}
