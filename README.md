@@ -23,7 +23,7 @@ No dependencies. Node 18+ (developed on 24).
 
 ## Install link
 
-Please click [here](https://chromewebstore.google.com/detail/cnooomakhmnmdjjhipgdahlgcabdgjpb?utm_source=item-share-cb)
+Please click [here](https://chromewebstore.google.com/detail/cnooomakhmnmdjjhipgdahlgcabdgjpb?utm_source=item-share-cb).
 
 ## Install locally
 
